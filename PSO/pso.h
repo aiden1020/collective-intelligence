@@ -3,10 +3,13 @@
 #include <iostream>
 #include <random>
 #include <ctime>
+#include <iomanip>
+
 using namespace std;
 
-std::random_device rd;        // Will be used to obtain a seed for the random number engine
-std::mt19937 generator(rd()); // Standard mersenne_twister_engine seeded with rd()
+std::random_device rd;
+std::mt19937 generator(rd());
+
 class PSO
 {
 public:
@@ -18,7 +21,7 @@ public:
         double k,
         double c1,
         double c2,
-        int numParticle = 20,
+        int numParticle,
         double wMax = 0.9,
         double wMin = 0.4)
         : _function(function),
@@ -33,7 +36,7 @@ public:
           _c2(c2),
           _k(k)
     {
-        // init particles
+        // 1. initialzation
         for (int i = 0; i < _numParticle; i++)
         {
             X[i] = new double[_numDim];
@@ -46,12 +49,8 @@ public:
                 X[i][j] = unif_X(generator);
                 pBest[i][j] = X[i][j];
                 pBestFitness[i] = _function(X[i], _numDim);
-
-                // random velocity for each particle from uniform distribution
-                uniform_real_distribution<double>
-                    unif_V(_vMin, _vMax);
-                V[i][j] = unif_V(generator);
-                // V[i][j] = 0;
+                // init velocity = 0
+                V[i][j] = 0;
             }
         }
         gBest = X[0];
@@ -70,29 +69,26 @@ public:
         // start iteration
         for (int t = 0; t < _maxIter; t++)
         {
+            // 2. transition
             for (int i = 0; i < _numParticle; i++)
             {
                 // calculate w (linear decrease)
                 double w = _wMax - t * (_wMax - _wMin) / _maxIter;
-                // double w = 0.8;
                 // update velocity
                 double *nextV = new double[_numDim];
-                uniform_real_distribution<double> unif_R1(0, 1);
-                uniform_real_distribution<double> unif_R2(0, 1);
-                double r1 = unif_R1(generator);
-                double r2 = unif_R2(generator);
-
+                uniform_real_distribution<double> unif(0, 1);
+                double r1 = unif(generator);
+                double r2 = unif(generator);
                 for (int j = 0; j < _numDim; j++)
                 {
-                    nextV[j] = w * V[i][j] + _c1 * (pBest[i][j] - X[i][j]) * r1 + _c2 * (gBest[j] - X[i][j]) * r2;
+                    V[i][j] = w * V[i][j] + _c1 * (pBest[i][j] - X[i][j]) * r1 + _c2 * (gBest[j] - X[i][j]) * r2;
 
-                    if (nextV[j] > _vMax)
-                        nextV[j] = _vMax;
-                    else if (nextV[j] < _vMin)
-                        nextV[j] = _vMin;
-                    V[i][j] = nextV[j];
+                    if (V[i][j] > _vMax)
+                        V[i][j] = _vMax;
+                    else if (V[i][j] < _vMin)
+                        V[i][j] = _vMin;
 
-                    X[i][j] += nextV[j];
+                    X[i][j] += V[i][j];
                     if (X[i][j] > _xMax)
                         X[i][j] = _xMax;
                     else if (X[i][j] < _xMin)
@@ -100,6 +96,7 @@ public:
                 }
                 delete[] nextV;
             }
+            // 3. evalution
             for (int i = 0; i < _numParticle; i++)
             {
                 // Calculate particle fitness
@@ -118,6 +115,7 @@ public:
                     gBestFitness = currentFitness;
                 }
             }
+            gBest_list[t] = gBestFitness;
         }
     }
     double get_gBestFitness()
@@ -127,6 +125,10 @@ public:
     double *get_gBest()
     {
         return gBest;
+    }
+    double *get_gBest_list()
+    {
+        return gBest_list;
     }
 
 private:
@@ -147,6 +149,7 @@ private:
     double **pBest = new double *[_numParticle];     // Personal Best pBest[_numParticle][_numDim]
     double *pBestFitness = new double[_numParticle]; // Personal Best fitness value
     double *gBest = new double[_numDim];             // Global Best gBest[_numDim]
+    double *gBest_list = new double[_maxIter];       // Record GBest
     double gBestFitness;                             // Global Best fitness value
     double **V = new double *[_numParticle];         // Velocity [_numParticle][_numDim]
 };

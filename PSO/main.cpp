@@ -2,22 +2,33 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <fstream>
+
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        cerr << "Usage: " << argv[0] << " <function_type> <run> <dimension> <k> <c1> <c2>" << endl;
+        cerr << "Usage: " << argv[0] << " <function_type> <run> <dimension> <k> <c1> <c2> <numParticle>" << endl;
         return 1;
     }
-
+    cout << scientific << setprecision(3);
     string function_type = argv[1];
     double run = atof(argv[2]);
     int dimension = atoi(argv[3]);
     double k = atof(argv[4]);
     double c1 = atof(argv[5]);
     double c2 = atof(argv[6]);
+    int numParticle = atoi(argv[7]);
+    string filename = "gBest_convergence.txt";
+
+    ofstream outputFile(filename);
+    if (!outputFile.is_open())
+    {
+        cerr << "Error opening file!" << endl;
+        return 1;
+    }
 
     // Define null function pointer
     typedef double (*FunctionPtr)(const double *, const int);
@@ -70,10 +81,11 @@ int main(int argc, char *argv[])
     {
         for (int i = 0; i < run; i++)
         {
-            PSO pso(function, dimension, upper_bound, lower_bound, k, c1, c2);
+            PSO pso(function, dimension, upper_bound, lower_bound, k, c1, c2, numParticle);
             pso.update();
             double *gBest_ = pso.get_gBest();
             double gBestFitness_ = pso.get_gBestFitness();
+            double *gBest_list_ = pso.get_gBest_list();
             cout << "Run" << i + 1 << " Global best Fitness :" << endl;
             cout << gBestFitness_ << endl;
             cout << "gBest : " << endl;
@@ -85,6 +97,11 @@ int main(int argc, char *argv[])
                  << "-------------------------------"
                  << endl;
             avg_gBest += gBestFitness_;
+            // output file
+            for (int j = 0; j < dimension * 10000; j++)
+            {
+                outputFile << scientific << setprecision(3) << gBest_list_[j] << endl;
+            }
         }
         avg_gBest /= run;
         cout << endl

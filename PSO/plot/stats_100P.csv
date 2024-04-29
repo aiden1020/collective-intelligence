@@ -1,0 +1,19 @@
+File,Average Fitness,Worst Fitness,Best Fitness
+Ackley_2D,4.61e-03,1.60e-02,1.23e-04
+Ackley_10D,1.56e+00,3.49e+00,9.56e-03
+Ackley_30D,4.19e+00,5.76e+00,2.89e+00
+HappyCat_2D,1.61e-01,2.95e-01,3.84e-02
+HappyCat_10D,2.60e-01,4.84e-01,1.44e-01
+HappyCat_30D,5.57e-01,8.10e-01,3.39e-01
+Michalewicz_2D,-1.36e+00,-9.96e-01,-1.79e+00
+Michalewicz_10D,-3.48e+00,-2.88e+00,-4.18e+00
+Michalewicz_30D,-8.31e+00,-7.29e+00,-9.34e+00
+Rastrigin_2D,2.52e-04,2.36e-03,7.09e-08
+Rastrigin_10D,3.75e+00,7.69e+00,6.09e-02
+Rastrigin_30D,2.51e+01,1.12e+02,4.15e+00
+Rosenbrock_2D,4.39e-02,3.85e-01,2.56e-08
+Rosenbrock_10D,1.61e+01,9.62e+01,8.00e-02
+Rosenbrock_30D,4.82e+01,2.35e+02,2.61e+01
+Zakharov_2D,1.07e-06,6.64e-06,9.41e-10
+Zakharov_10D,1.36e+00,5.67e+00,1.05e-05
+Zakharov_30D,1.82e+01,4.44e+01,7.80e+00
