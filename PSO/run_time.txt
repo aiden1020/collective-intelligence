@@ -1,0 +1,10 @@
+Ackley , 8.83601
+Rastrigin , 8.61994
+HappyCat , 7.52777
+Rosenbrock , 7.98448
+Zakharov , 8.45031
+Michalewicz , 17.1912
+Schwefel , 8.78056
+BentCigar , 8.07265
+DropWave , 8.45563
+Step , 8.04167

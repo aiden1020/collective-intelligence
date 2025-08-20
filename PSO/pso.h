@@ -49,7 +49,7 @@ public:
                 X[i][j] = unif_X(generator);
                 pBest[i][j] = X[i][j];
                 pBestFitness[i] = _function(X[i], _numDim);
-                // init velocity = 0
+                // init velocity  0
                 V[i][j] = 0;
             }
         }
@@ -74,6 +74,8 @@ public:
             {
                 // calculate w (linear decrease)
                 double w = _wMax - t * (_wMax - _wMin) / _maxIter;
+                // double w = 0.5;
+
                 // update velocity
                 double *nextV = new double[_numDim];
                 uniform_real_distribution<double> unif(0, 1);
@@ -105,13 +107,19 @@ public:
                 // update Personal Best
                 if (currentFitness <= pBestFitness[i])
                 {
-                    pBest[i] = X[i];
+                    for (int j = 0; j < _numDim; j++)
+                    {
+                        pBest[i][j] = X[i][j];
+                    }
                     pBestFitness[i] = currentFitness;
                 }
                 // update Global Best
                 if (currentFitness <= gBestFitness)
                 {
-                    gBest = X[i];
+                    for (int j = 0; j < _numDim; j++)
+                    {
+                        gBest[j] = X[i][j];
+                    }
                     gBestFitness = currentFitness;
                 }
             }
@@ -215,6 +223,46 @@ double Michalewicz(const double *x, const int d)
         sum1 += sin(x[i]) * pow(sin((double(i + 1) * x[i] * x[i]) / M_PI), 20.0);
     }
     return sum1 * (-1);
+}
+
+double Schwefel(const double *x, const int d)
+{
+    double sum1 = 0.0;
+    for (int i = 0; i < d; ++i)
+    {
+        sum1 += x[i] * sin(sqrt(fabs(x[i])));
+    }
+    return 418.9829 * double(d) - sum1;
+}
+
+double BentCigar(const double *x, const int d)
+{
+    double sum1 = 0.0;
+    for (int i = 1; i < d; ++i)
+    {
+        sum1 += x[i] * x[i];
+    }
+    return x[0] * x[0] + pow(10.0, 6) * sum1;
+}
+
+double DropWave(const double *x, const int d)
+{
+    double sum1 = 0.0;
+    for (int i = 0; i < d; ++i)
+    {
+        sum1 += x[i] * x[i];
+    }
+    return 1.0 - ((1.0 + cos(12.0 * sqrt(sum1))) / (0.5 * sum1 + 2.0));
+}
+
+double Step(const double *x, const int d)
+{
+    double sum1 = 0.0;
+    for (int i = 0; i < d; ++i)
+    {
+        sum1 += floor(x[i] + 0.5) * floor(x[i] + 0.5);
+    }
+    return sum1;
 }
 
 #endif
